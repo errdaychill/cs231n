@@ -48,7 +48,7 @@ class LinearClassifier(object):
             # TODO:                                                                 #
             # Sample batch_size elements from the training data and their           #
             # corresponding labels to use in this round of gradient descent.        #
-            # Store the data in X_batch and their corresponding labels in           #
+            # Store the data in X_batch and their corresponding labels in           #   
             # y_batch; after sampling X_batch should have shape (batch_size, dim)   #
             # and y_batch should have shape (batch_size,)                           #
             #                                                                       #
@@ -56,7 +56,9 @@ class LinearClassifier(object):
             # replacement is faster than sampling without replacement.              #
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+            a=np.random.choice(X.shape[0],batch_size,replace = True)
+            X_batch = X[a]
+            y_batch = y[a]
             pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -71,7 +73,7 @@ class LinearClassifier(object):
             # Update the weights using the gradient and the learning rate.          #
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+            self.W -=learning_rate*grad
             pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -101,7 +103,8 @@ class LinearClassifier(object):
         # Implement this method. Store the predicted labels in y_pred.            #
         ###########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+        pred = X.dot(self.W)
+        y_pred=pred.argmax(axis=1)     
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
