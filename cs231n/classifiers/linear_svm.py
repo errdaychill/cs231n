@@ -117,8 +117,8 @@ def svm_loss_vectorized(W, X, y, reg):
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     loss_M=np.zeros(margin.shape)
     loss_M[margin>0]=1
-    count = loss_M.sum(axis=1)
-    loss_M[np.arange(num_train),y]-=count
+    loss_count = loss_M.sum(axis=1)
+    loss_M[np.arange(num_train),y]-=loss_count
     dW = X.T.dot(loss_M) / num_train
     dW+= 2*reg*W
     pass
