@@ -79,6 +79,11 @@ class TwoLayerNet(object):
         # shape (N, C).                                                             #
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        num_train = X.shape[0]
+        
+        hidden = np.maximum(0,X.dot(W1)+b1)
+        scores = hidden.dot(W2)+b2 # N by C
+
 
         pass
 
@@ -97,7 +102,13 @@ class TwoLayerNet(object):
         # classifier loss.                                                          #
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+        scores -= np.amax(scores,axis=1).reshape(num_train,1)
+        e_scores = np.exp(scores)
+        row_sum = np.sum(e_scores,axis=1)
+        softmax = e_scores/row_sum.reshape(num_train,1)
+        loss -= np.sum(np.log(softmax[np.arange(num_train),y]))
+        loss /= num_train
+        loss += reg*(np.sum(W1*W1)+np.sum(W2*W2))
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -110,7 +121,7 @@ class TwoLayerNet(object):
         # grads['W1'] should store the gradient on W1, and be a matrix of same size #
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+        grads[W1] = 
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
