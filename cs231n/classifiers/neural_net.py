@@ -106,6 +106,7 @@ class TwoLayerNet(object):
         e_scores = np.exp(scores)
         row_sum = np.sum(e_scores,axis=1)
         softmax = e_scores/row_sum.reshape(num_train,1)
+        loss = 0.0
         loss -= np.sum(np.log(softmax[np.arange(num_train),y]))
         loss /= num_train
         loss += reg*(np.sum(W1*W1)+np.sum(W2*W2))
@@ -121,7 +122,18 @@ class TwoLayerNet(object):
         # grads['W1'] should store the gradient on W1, and be a matrix of same size #
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        grads[W1] = 
+        #X = N ,D///
+        #W1 = D ,H
+        
+        #W2 = H,C
+        softmax[np.arange(num_train),y]-=1
+        softmax /=num_train
+        upstream = softmax.dot(W2.T) # N,H = N,C * C,H
+        drelu = upstream*((X.dot(W1)+b1)>0) # N,H * N,H
+        grads['W1'] = X.T.dot(drelu) + 2*reg*W1# D,H = D,N*N,H
+        grads['W2'] = hidden.T.dot(softmax) + 2*reg*W2 # 왜 dy/dw2는 N by H가 아닐까
+        grads['b1'] = np.sum(softmax.dot(W2.T)*((X.dot(W1)+b1)>0),axis=0)
+        grads['b2'] = np.sum(softmax,axis=0)
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -166,7 +178,9 @@ class TwoLayerNet(object):
             # them in X_batch and y_batch respectively.                             #
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+            sampling = np.random.choice(num_train,batch_size)
+            X_batch = X[sampling]
+            y_batch = y[sampling]
             pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -182,7 +196,9 @@ class TwoLayerNet(object):
             # stored in the grads dictionary defined above.                         #
             #########################################################################
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+            for key in self.params:
+              self.params[key] -= learning_rate*grads[key]
+           
             pass
 
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
@@ -228,7 +244,8 @@ class TwoLayerNet(object):
         # TODO: Implement this function; it should be VERY simple!                #
         ###########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
+        
+        y_pred = np.argmax(self.loss(X),axis=1)
         pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
